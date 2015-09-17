@@ -1,0 +1,38 @@
+{
+  "name": "component-playground-responsive-iframe",
+  "version": "0.1.0",
+  "description": "A responsive iframe renderer with a similar goal to Firefox devtools responsive view for the React component playground",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel index.js -o dist/index.js",
+    "prepublish": "npm run build"
+  },
+  "files": [
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/iamdustan/component-playground-responsive-iframe.git"
+  },
+  "keywords": [
+    "react",
+    "component-playground",
+    "responsive"
+  ],
+  "author": "Dustan Kasten <dustan.kasten@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iamdustan/component-playground-responsive-iframe/issues"
+  },
+  "homepage": "https://github.com/iamdustan/component-playground-responsive-iframe#readme",
+  "peerDependencies": {
+    "react": ">0.13.0"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23"
+  },
+  "dependencies": {
+    "react-frame-component": "^0.3.4"
+  }
+}
