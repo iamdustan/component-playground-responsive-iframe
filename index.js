@@ -25,7 +25,8 @@ var styles = {
       right: 0,
       background: '#eee',
       overflow: 'auto',
-      padding: '1em'
+      padding: '1em',
+      zIndex: 999
     },
     'default': {
       position: 'relative',
