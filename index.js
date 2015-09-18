@@ -1,76 +1,143 @@
 import React, {Component} from 'react';
 import Frame from 'react-frame-component';
 
+const devices = [
+  {name: 'iPhone 4', value: '320x480'},
+  {name: 'iPhone 5', value: '320x568'},
+  {name: 'iPhone 6', value: '375x627'},
+  {name: 'iPhone 6 Plus', value: '414x736'},
+  {name: 'iPad', value: '768x1024'},
+  {name: 'Nexus 4', value: '384x567'},
+  {name: 'Nexus 5', value: '360x567'},
+  {name: 'Nexus 6', value: '412x659'},
+  {name: 'Nexus 7', value: '600x960'},
+  {name: 'Nexus 10', value: '800x1280'},
+];
+
+var styles = {
+  container: {
+    position: 'relative',
+    background: '#eee',
+    overflow: 'auto',
+    padding: '1em'
+  },
+  form: {
+    absolute: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      background: '#f0f0f0',
+      border: '1px solid #ccc',
+      borderTopColor: '#ddd',
+      borderBottomWidth: '2px',
+      padding: '0.5em'
+    },
+    top: {
+      background: '#f0f0f0',
+      borderBottomWidth: '2px solid #ccc',
+      margin: '-1em -1em 1em -1em',
+      padding: '1em'
+    }
+  },
+  inputs: {
+    display: 'inline-block',
+    marginLeft: '1em'
+  },
+  input: {
+    width: '5em',
+    background: 'transparent',
+    border: '0',
+    borderBottom: '1px solid #ccc',
+    padding: '0.1em 0.5em',
+  },
+  x: {
+    fontFace: 'sans-serif',
+    fontSize: '0.6666em',
+    display: 'inline-block',
+    margin: '0 0.333em'
+
+  }
+};
+
 // grab all of the document style and link tags and to inject into our iFrame
 // component
-var documentHead = () => (
-  typeof document !== 'undefined' && (
-    <head>
-      {Array.prototype.slice.call(document.head.children, 0).map((child, index) => (
-        child.tagName === 'STYLE' && child.type === 'text/css'
-          ? <style key={index} type="text/css">{child.textContent}</style>
-          : child.tagName === 'LINK' && child.rel === 'stylesheet'
-            ? <link key={index} rel="stylesheet" href={child.href} />
-            : null
-      ))}
-    </head>
-  )
+var documentHead = () => typeof document !== 'undefined' && (
+  <head>
+    {Array.prototype.slice.call(document.head.children, 0).map((child, index) => (
+      child.tagName === 'STYLE' && child.type === 'text/css'
+        ? <style key={index} type="text/css">{child.textContent}</style>
+        : child.tagName === 'LINK' && child.rel === 'stylesheet'
+          ? <link key={index} rel="stylesheet" href={child.href} />
+          : null
+    ))}
+  </head>
 );
 
 class ResponsiveIframe extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.state = {dimensions: ''};
-    this.onBlur = event => this._setState(event.target);
-
-    this.onSubmit = event => {
-      event.preventDefault();
-      this._setState(this.refs.dimensions.getDOMNode());
+    this.state = {width: 0, height: 0, formPosition: 'top'};
+    this.onChange = event => {
+      var {name, value} = event.target;
+      this.setState({[name]: value});
     };
-  }
+    this.handleChangeSelect = event => {
+      var [width, height] = event.target.value.split('x').map(n => +n);
+      if (width === 'Custom') return;
+      this.setState({width, height});
+    };
 
-  _setState(node) {
-    var {name, value} = node;
-    this.setState({[name]: value});
+    this.onSubmit = event => event.preventDefault();
+
+    this.toggleFormPosition = event => {
+      this.setState({formPosition: this.state.formPosition === 'top' ? 'absolute' : 'top'})
+    };
   }
 
   render() {
-    var [w, h] = this.state.dimensions.split('x');
-    var style = {
+    var {width, height} = this.state;
+    var frameStyle = {
       background: '#fff',
-      border: 0,
-      width: w || '100%',
-      height: h || null,
+      border: '1px solid #e0e0e0',
+      width: width || '100%',
+      height: height || null,
       display: 'block',
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      margin: '0 auto',
     };
 
     return (
-      <div style={{position: 'relative', background: '#eee'}}>
-        <Frame style={style} head={documentHead()}>
-          {this.props.children}
-        </Frame>
+      <div style={styles.container}>
         <form
           onSubmit={this.onSubmit}
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0
-          }}>
-          <input
-            placeholder="100%x500"
-            ref="dimensions"
-            onBlur={this.onBlur}
-            name="dimensions" />
+          style={styles.form[this.state.formPosition]}
+        >
+          <select onChange={this.handleChangeSelect} value={`${width}x${height}`}>
+            <option>Custom</option>
+            {devices.map(d => <option key={d.name} value={d.value}>{d.name}</option>)}
+          </select>
+          <div style={styles.inputs}>
+            <input
+              style={styles.input}
+              placeholder="width"
+              name="width"
+              onChange={this.onChange}
+              value={this.state.width || null} />
+            <span style={styles.x}>×</span>
+            <input
+              style={styles.input}
+              placeholder="height"
+              name="height"
+              onChange={this.onChange}
+              value={this.state.height || null} />
+          </div>
+          <button onClick={this.toggleFormPosition}>Toggle</button>
         </form>
+        <Frame style={frameStyle} head={documentHead()}>{this.props.children}</Frame>
       </div>
     )
-
   }
 }
-
 
 export default ResponsiveIframe;
 

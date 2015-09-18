@@ -27,12 +27,13 @@
   },
   "homepage": "https://github.com/iamdustan/component-playground-responsive-iframe#readme",
   "peerDependencies": {
-    "react": ">0.13.0"
+    "react": "^0.14.0-rc1",
+    "react-dom": "^0.14.0-rc1"
   },
   "devDependencies": {
     "babel": "^5.8.23"
   },
   "dependencies": {
-    "react-frame-component": "^0.3.4"
+    "react-frame-component": "iamdustan/react-frame-component#0-14"
   }
 }
