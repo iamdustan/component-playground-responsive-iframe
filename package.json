@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel index.js -o dist/index.js",
+    "build": "babel index.js -o dist/index.js && babel icon-full-screen.js -o dist/icon-full-screen.js",
     "prepublish": "npm run build"
   },
   "files": [

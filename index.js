@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Frame from 'react-frame-component';
+import FullScreen from './icon-full-screen';
 
 const devices = [
   {name: 'iPhone 4', value: '320x480'},
@@ -16,10 +17,22 @@ const devices = [
 
 var styles = {
   container: {
-    position: 'relative',
-    background: '#eee',
-    overflow: 'auto',
-    padding: '1em'
+    fullScreen: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      background: '#eee',
+      overflow: 'auto',
+      padding: '1em'
+    },
+    'default': {
+      position: 'relative',
+      background: '#eee',
+      overflow: 'auto',
+      padding: '1em'
+    }
   },
   form: {
     absolute: {
@@ -33,10 +46,11 @@ var styles = {
       padding: '0.5em'
     },
     top: {
-      background: '#f0f0f0',
-      borderBottomWidth: '2px solid #ccc',
+      background: '#303030',
+      borderBottom: '2px solid #000',
       margin: '-1em -1em 1em -1em',
-      padding: '1em'
+      padding: '1em',
+      color: '#eee'
     }
   },
   inputs: {
@@ -49,13 +63,18 @@ var styles = {
     border: '0',
     borderBottom: '1px solid #ccc',
     padding: '0.1em 0.5em',
+    color: 'inherit'
   },
   x: {
     fontFace: 'sans-serif',
     fontSize: '0.6666em',
     display: 'inline-block',
     margin: '0 0.333em'
-
+  },
+  button: {
+    fontSize: '0.666em',
+    height: '1.1666rem',
+    float: 'right'
   }
 };
 
@@ -77,7 +96,12 @@ class ResponsiveIframe extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.state = {width: 0, height: 0, formPosition: 'top'};
+    this.state = {
+      width: 0,
+      height: 0,
+      formPosition: 'top',
+      isFullScreen: true
+    };
     this.onChange = event => {
       var {name, value} = event.target;
       this.setState({[name]: value});
@@ -91,7 +115,13 @@ class ResponsiveIframe extends Component {
     this.onSubmit = event => event.preventDefault();
 
     this.toggleFormPosition = event => {
-      this.setState({formPosition: this.state.formPosition === 'top' ? 'absolute' : 'top'})
+      this.setState({
+        formPosition: this.state.formPosition === 'top' ? 'absolute' : 'top'
+      });
+    };
+
+    this.toggleFixed = event => {
+      this.setState({isFullScreen: !this.state.isFullScreen});
     };
   }
 
@@ -106,8 +136,9 @@ class ResponsiveIframe extends Component {
       margin: '0 auto',
     };
 
+    var containerStyles = styles.container[this.state.isFullScreen ? 'fullScreen' : 'default'];
     return (
-      <div style={styles.container}>
+      <div style={containerStyles}>
         <form
           onSubmit={this.onSubmit}
           style={styles.form[this.state.formPosition]}
@@ -131,7 +162,8 @@ class ResponsiveIframe extends Component {
               onChange={this.onChange}
               value={this.state.height || null} />
           </div>
-          <button onClick={this.toggleFormPosition}>Toggle</button>
+          <button onClick={this.toggleFixed} style={styles.button}><FullScreen /></button>
+          <button onClick={this.toggleFormPosition} style={styles.button}>Toggle</button>
         </form>
         <Frame style={frameStyle} head={documentHead()}>{this.props.children}</Frame>
       </div>
