@@ -1,6 +1,6 @@
 {
   "name": "component-playground-responsive-iframe",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A responsive iframe renderer with a similar goal to Firefox devtools responsive view for the React component playground",
   "main": "dist/index.js",
   "scripts": {
