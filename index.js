@@ -100,7 +100,7 @@ class ResponsiveIframe extends Component {
       width: 0,
       height: 0,
       formPosition: 'top',
-      isFullScreen: true
+      isFullScreen: false
     };
     this.onChange = event => {
       var {name, value} = event.target;
