@@ -1,6 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import Frame from 'react-frame-component';
 import FullScreen from './icon-full-screen';
+
+const shouldObserveHead = (
+  process.env.NODE_ENV === 'development' &&
+  typeof MutationObserver !== 'undefined'
+);
 
 const devices = [
   {name: 'iPhone 4', value: '320x480'},
@@ -124,6 +129,33 @@ class ResponsiveIframe extends Component {
     this.toggleFixed = event => {
       this.setState({isFullScreen: !this.state.isFullScreen});
     };
+
+    if (shouldObserveHead) {
+      this.observer = true;
+    }
+  }
+
+  componentWillMount() {
+    if (typeof document === 'undefined') return;
+
+    if (shouldObserveHead) {
+      var target = document.head;
+      // this is a bit of hack to keep the iframe synced with local dev
+      // stylesheets
+      this.observer = new MutationObserver((mutations) => {
+        this.forceUpdate();
+      });
+
+      var config = {childList: true, characterData: true};
+      this.observer.observe(target, config);
+    }
+  }
+
+  componentWillUnmount() {
+    if (shouldObserveHead) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
   }
 
   render() {
